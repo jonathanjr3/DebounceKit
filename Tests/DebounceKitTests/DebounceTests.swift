@@ -11,6 +11,7 @@ import Foundation
 private actor Box<T: Sendable> {
     private(set) var value: T?
     func set(_ newValue: T) { value = newValue }
+    func modify(_ transform: (T?) -> T) { value = transform(value) }
 }
 
 @Suite("Debounce")
@@ -19,7 +20,7 @@ struct DebounceTests {
     @Test("fires action after delay")
     func firesAfterDelay() async {
         let count = Box<Int>()
-        let debounce = Debounce({ await count.set((count.value ?? 0) + 1) }, for: .milliseconds(50))
+        let debounce = Debounce({ await count.modify { ($0 ?? 0) + 1 } }, for: .milliseconds(50))
 
         await debounce()
 
@@ -30,7 +31,7 @@ struct DebounceTests {
     @Test("cancels previous call when invoked again")
     func cancelsPreviousCall() async {
         let count = Box<Int>()
-        let debounce = Debounce({ await count.set((count.value ?? 0) + 1) }, for: .milliseconds(100))
+        let debounce = Debounce({ await count.modify { ($0 ?? 0) + 1 } }, for: .milliseconds(100))
 
         await debounce()
         await debounce()
@@ -43,7 +44,7 @@ struct DebounceTests {
     @Test("does not fire after cancel()")
     func doesNotFireAfterCancel() async {
         let count = Box<Int>()
-        let debounce = Debounce({ await count.set((count.value ?? 0) + 1) }, for: .milliseconds(100))
+        let debounce = Debounce({ await count.modify { ($0 ?? 0) + 1 } }, for: .milliseconds(100))
 
         await debounce()
         await debounce.cancel()
@@ -79,7 +80,7 @@ struct DebounceTests {
     @Test("fires independently for separate calls after delay")
     func separateCallsEachFire() async {
         let count = Box<Int>()
-        let debounce = Debounce({ await count.set((count.value ?? 0) + 1) }, for: .milliseconds(50))
+        let debounce = Debounce({ await count.modify { ($0 ?? 0) + 1 } }, for: .milliseconds(50))
 
         await debounce()
         try? await Task.sleep(for: .milliseconds(100))
