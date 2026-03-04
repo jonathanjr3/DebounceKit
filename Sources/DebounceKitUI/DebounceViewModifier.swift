@@ -5,6 +5,7 @@
 //  Created by Jonathan Rajya on 25/10/2025.
 //
 
+#if canImport(SwiftUI)
 import SwiftUI
 
 private struct DebounceModifier<Value: Equatable>: ViewModifier {
@@ -93,3 +94,4 @@ public extension View {
         )
     }
 }
+#endif

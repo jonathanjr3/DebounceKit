@@ -10,12 +10,24 @@ This package is based on the concepts presented in the article [How to use Debou
 
 ## Requirements
 
+**DebounceKit** (core actor) — cross-platform:
+- Linux, Windows
 - iOS 17 or later
 - macOS 14 or later
+- watchOS 10 or later
+- tvOS 17 or later
+- visionOS 1 or later
+
+**DebounceKitUI** (SwiftUI modifier) — Apple platforms only:
+- iOS 17 or later
+- macOS 14 or later
+- watchOS 10 or later
+- tvOS 17 or later
+- visionOS 1 or later
 
 ## Installation
 
-Add **DebounceKit** to your project with Swift Package Manager.
+Add the package to your project with Swift Package Manager.
 
 ```swift
 // In Package.swift
@@ -24,7 +36,17 @@ dependencies: [
 ]
 ```
 
-You can also add the package in Xcode: **File > Add Packages...** and enter the Git URL of this repo.
+Then add the product(s) you need to your target:
+
+```swift
+// Core actor only (cross-platform)
+.product(name: "DebounceKit", package: "DebounceKit")
+
+// SwiftUI modifier — also pulls in DebounceKit
+.product(name: "DebounceKitUI", package: "DebounceKit")
+```
+
+You can also add the package in Xcode: **File > Add Packages...** and enter the Git URL of this repo. Select **DebounceKit** for pure Swift targets or **DebounceKitUI** for SwiftUI apps.
 
 ## Debounce actor
 
@@ -61,6 +83,8 @@ let searchDebounce = Debounce(searchAction, for: .milliseconds(300))
 ```
 
 ## SwiftUI view modifier
+
+> Requires `import DebounceKitUI`
 
 `onChangeDebounced` helps you react to state updates in SwiftUI while ignoring rapid changes.
 
